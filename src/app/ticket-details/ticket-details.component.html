@@ -1,3 +1,50 @@
 <div *ngIf="ticket$ | async as ticket">
-  {{ ticket.id }} {{ ticket.description }}
+  <h3>Ticket: {{ ticket.id }}</h3>
+  <mat-list>
+    <mat-list-item>Description: {{ ticket.description }}</mat-list-item>
+    <mat-list-item>
+      Assigned To: <span *ngIf="user$ | async as user">{{ user.name }}</span>
+    </mat-list-item>
+    <mat-list-item *ngIf="ticket.completed">Status: Closed</mat-list-item>
+    <mat-list-item *ngIf="!ticket.completed">Status: Open</mat-list-item>
+  </mat-list>
+
+  <button
+    class="action-button"
+    *ngIf="!ticket.completed"
+    mat-raised-button
+    color="primary"
+    (click)="complete(true)"
+  >
+    Mark Complete
+  </button>
+  <button
+    class="action-button"
+    *ngIf="ticket.completed"
+    mat-raised-button
+    color="primary"
+    (click)="complete(false)"
+  >
+    Reopen Ticket
+  </button>
+
+  <br />
+
+  <button
+    class="action-button"
+    mat-raised-button
+    color="accent"
+    (click)="assign()"
+  >
+    Assign Ticket
+  </button>
+
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-select [(value)]="userId">
+      <mat-option *ngFor="let user of users$ | async" [value]="user.id">
+        {{ user.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>

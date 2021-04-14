@@ -1,9 +1,8 @@
 <h2>Tickets</h2>
 
-<ul>
-  <li *ngFor="let t of tickets | async">
-    Ticket:
-    <a routerLink="{{ t.id }}">{{ t.id }}</a>
+<mat-list>
+  <mat-list-item *ngFor="let t of tickets | async">
+    <a routerLink="{{ t.id }}">Ticket: {{ t.id }}</a>
     , {{ t.description }}
-  </li>
-</ul>
+  </mat-list-item>
+</mat-list>

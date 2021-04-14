@@ -3,12 +3,20 @@ import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
-      imports: [RouterTestingModule, MatSidenavModule, NoopAnimationsModule],
+      imports: [
+        RouterTestingModule,
+        MatSidenavModule,
+        MatListModule,
+        MatSelectModule,
+        NoopAnimationsModule,
+      ],
     }).compileComponents();
   });
 

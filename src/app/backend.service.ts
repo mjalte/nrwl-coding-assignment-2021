@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
-import { delay, tap } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 
 /**
  * This service acts as a mock backend.
@@ -29,40 +29,64 @@ export class BackendService {
   storedTickets: Ticket[] = [
     {
       id: 0,
-      description: "Install a monitor arm",
+      description: 'Install a monitor arm',
       assigneeId: 111,
-      completed: false
+      completed: false,
     },
     {
       id: 1,
-      description: "Move the desk to the new location",
+      description: 'Move the desk to the new location',
       assigneeId: 111,
-      completed: false
-    }
+      completed: false,
+    },
   ];
 
   storedUsers: User[] = [
-    { id: 111, name: "Victor" },
-    { id: 222, name: "Jack" }
+    { id: 111, name: 'Victor' },
+    { id: 222, name: 'Jack' },
   ];
 
   lastId = 1;
 
-  private findTicketById = id =>
-    this.storedTickets.find(ticket => ticket.id === +id);
+  tickets$: BehaviorSubject<Ticket[]>;
+  users$: BehaviorSubject<User[]>;
+  currentTicket$: Subject<Ticket>;
+  currentUser$: Subject<User>;
 
-  private findUserById = id => this.storedUsers.find(user => user.id === +id);
+  constructor() {
+    this.tickets$ = new BehaviorSubject<Ticket[]>(this.storedTickets);
+    this.users$ = new BehaviorSubject<User[]>(this.storedUsers);
+    this.currentTicket$ = new Subject<Ticket>();
+    this.currentUser$ = new Subject<User>();
+  }
+
+  private findTicketById = (id) =>
+    this.storedTickets.find((ticket) => ticket.id === +id);
+
+  private findUserById = (id) =>
+    this.storedUsers.find((user) => user.id === +id);
 
   tickets() {
-    return of(this.storedTickets).pipe(delay(randomDelay()));
+    return this.tickets$.pipe(delay(randomDelay()));
   }
 
   ticket(id: number): Observable<Ticket> {
-    return of(this.findTicketById(id)).pipe(delay(randomDelay()));
+    return of(this.findTicketById(id)).pipe(
+      delay(randomDelay()),
+      tap((ticket) => this.currentTicket$.next(ticket))
+    );
+  }
+
+  currentTicket(): Observable<Ticket> {
+    return this.currentTicket$.asObservable();
+  }
+
+  currentUser(): Observable<User> {
+    return this.currentUser$.asObservable();
   }
 
   users() {
-    return of(this.storedUsers).pipe(delay(randomDelay()));
+    return this.users$.pipe(delay(randomDelay()));
   }
 
   user(id: number) {
@@ -74,7 +98,7 @@ export class BackendService {
       id: ++this.lastId,
       description: payload.description,
       assigneeId: null,
-      completed: false
+      completed: false,
     };
 
     this.storedTickets = this.storedTickets.concat(newTicket);
@@ -90,19 +114,22 @@ export class BackendService {
     return this.update(ticketId, { completed });
   }
 
-  update(ticketId: number, updates: Partial<Omit<Ticket, "id">>) {
+  update(ticketId: number, updates: Partial<Omit<Ticket, 'id'>>) {
     const foundTicket = this.findTicketById(ticketId);
 
     if (!foundTicket) {
-      return throwError(new Error("ticket not found"));
+      return throwError(new Error('ticket not found'));
     }
 
     const updatedTicket = { ...foundTicket, ...updates };
 
-    this.storedTickets = this.storedTickets.map(t =>
+    this.storedTickets = this.storedTickets.map((t) =>
       t.id === ticketId ? updatedTicket : t
     );
 
-    return of(updatedTicket).pipe(delay(randomDelay()));
+    return of(updatedTicket).pipe(
+      delay(randomDelay()),
+      tap((res) => this.currentTicket$.next(res))
+    );
   }
 }
