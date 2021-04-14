@@ -1,0 +1,13 @@
+.drawer-container {
+  width: 100%;
+  min-height: 100%;
+  border: 1px solid #555;
+}
+
+.drawer-sidenav {
+  width: 175px;
+}
+
+.drawer-content {
+  padding: 25px;
+}

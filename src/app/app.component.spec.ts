@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
+      imports: [RouterTestingModule, MatSidenavModule, NoopAnimationsModule],
     }).compileComponents();
   });
 
@@ -16,16 +18,12 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'nrwl-coding-assignment'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('nrwl-coding-assignment');
-  });
-
-  it('should render title', () => {
+  it('should render header', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('nrwl-coding-assignment app is running!');
+    expect(compiled.querySelector('h1').textContent).toContain(
+      'Nrwl Interview Code Assignment - Altebrando'
+    );
   });
 });

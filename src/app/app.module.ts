@@ -1,16 +1,32 @@
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
+import { BackendService } from './backend.service';
+import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
+import { TicketListComponent } from './ticket-list/ticket-list.component';
+
+const routes: Routes = [
+  { path: 'tickets/:id', component: TicketDetailsComponent },
+  { path: 'tickets', component: TicketListComponent },
+  { path: '', redirectTo: '/tickets', pathMatch: 'full' },
+];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent, TicketListComponent, TicketDetailsComponent],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatListModule,
+    MatSidenavModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [BackendService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
